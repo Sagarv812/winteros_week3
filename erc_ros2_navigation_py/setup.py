@@ -18,7 +18,7 @@ setup(
     description='Python nodes for slam, localization and navigation with Gazebo Harmonic and ROS Jazzy for ERC MOGI ROS2 course',
     license='Apache License 2.0',
     tests_require=['pytest'],
-    entry_points={
+        entry_points={
         'console_scripts': [
             'send_initialpose = erc_ros2_navigation_py.send_initialpose:main',
             'slam_toolbox_load_map = erc_ros2_navigation_py.slam_toolbox_load_map:main',

@@ -1,10 +1,9 @@
 import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import Odometry, Path
+from rclpy.duration import Duration
+from nav_msgs.msg import Path
 from geometry_msgs.msg import PoseStamped, TransformStamped
-#from tf2_ros import TransformListener, Buffer
-from bitbots_tf_buffer import Buffer
-from rosgraph_msgs.msg import Clock
+from tf2_ros import TransformListener, Buffer
 import math
 
 class TrajectoryPublisher(Node):
@@ -17,11 +16,9 @@ class TrajectoryPublisher(Node):
         self.declare_parameter("publish_rate", 2.0) # in Hz
         self.declare_parameter("min_distance", 0.1) # in meters
 
-        # TF2 Listener
-        self.tf_buffer = Buffer(self)
-        # Decrease CPU load by not using a TransformListener
-        # Using https://github.com/bit-bots/bitbots_tf_buffer instead
-        #self.tf_listener = TransformListener(self.tf_buffer, self)
+        # TF2 Listener - standard tf2_ros implementation
+        self.tf_buffer = Buffer()
+        self.tf_listener = TransformListener(self.tf_buffer, self)
 
         # Default values
         self.update_rate = self.get_parameter("update_rate").value
@@ -31,7 +28,7 @@ class TrajectoryPublisher(Node):
         self.robot_frame_id = self.get_parameter("robot_frame_id").value
         self.use_sim_time = self.get_parameter('use_sim_time').get_parameter_value().bool_value
 
-        # Create seperate timers for publisher and transformation
+        # Create separate timers for publisher and transformation
         self.path_pub = self.create_publisher(Path, self.get_parameter("trajectory_topic").value, 10)
         self.publish_timer = self.create_timer(1.0/self.publish_rate, self.publish_trajectory)
         self.transform_timer = self.create_timer(1.0/self.update_rate, self.get_pose)

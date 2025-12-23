@@ -163,8 +163,10 @@ def generate_launch_description():
         package='erc_trajectory_server',
         executable='erc_trajectory_server',
         name='erc_trajectory_server',
-        parameters=[{'reference_frame_id': 'odom'}]
+        parameters=[{'reference_frame_id': 'map'}]
     )
+    
+    
 
     ekf_node = Node(
         package='robot_localization',
